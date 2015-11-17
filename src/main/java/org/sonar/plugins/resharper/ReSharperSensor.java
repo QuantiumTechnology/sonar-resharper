@@ -36,6 +36,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.rules.ActiveRule;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 
 public class ReSharperSensor implements Sensor {
@@ -68,13 +69,30 @@ public class ReSharperSensor implements Sensor {
     if (!hasFilesToAnalyze()) {
       shouldExecute = false;
     } else if (profile.getActiveRulesByRepository(getConfiguration().repositoryKey()).isEmpty()) {
-      LOG.info("All ReSharper rules are disabled, skipping its execution.");
+      if(canLog("info")) {
+        LOG.info("All ReSharper rules are disabled, skipping its execution.");
+      }
       shouldExecute = false;
     } else {
       shouldExecute = true;
     }
 
     return shouldExecute;
+  }
+
+  private boolean canLog(final String requestedLevel){
+    if(!settings.hasKey(ReSharperPlugin.LOG_VERBOSITY))
+      return true;
+
+    String[] levels = new String[]{"trace","debug","info","warn","error","fatal"};
+    String requestedLevelToLower = requestedLevel.toLowerCase();
+    String projectSetting = settings.getString(ReSharperPlugin.LOG_VERBOSITY).toLowerCase();
+
+    if(java.util.Arrays.asList(levels).indexOf(requestedLevelToLower)<0) {
+      return true;
+    }
+
+    return (java.util.Arrays.asList(levels).indexOf(requestedLevelToLower) >= java.util.Arrays.asList(levels).indexOf(projectSetting));
   }
 
   private boolean hasFilesToAnalyze() {
@@ -96,7 +114,9 @@ public class ReSharperSensor implements Sensor {
   private void logMessageIfLegacySettingsDefined() {
     if (settings.hasKey(ReSharperPlugin.PROJECT_NAME_PROPERTY_KEY) ||
       settings.hasKey(ReSharperPlugin.INSPECTCODE_PATH_PROPERTY_KEY)) {
-      LOG.warn("ReSharper plugin is running in reportPath mode, other properties other than reportPath and solutionFile can be undefined");
+      if(canLog("warn")) {
+        LOG.warn("ReSharper plugin is running in reportPath mode, other properties other than reportPath and solutionFile can be undefined");
+      }
     }
   }
 
@@ -109,8 +129,11 @@ public class ReSharperSensor implements Sensor {
 
   @VisibleForTesting
   void analyseRunInspectCode(FileProvider fileProvider, ReSharperDotSettingsWriter writer, ReSharperReportParser parser, ReSharperExecutor executor) {
-    LOG.warn("ReSharper plugin is running in deprecated mode. inspectcode.exe should be ran outside the " +
-      "plugin and the report imported through " + reSharperConf.reportPathKey() + " property.");
+    if(canLog("warn")) {
+      LOG.warn("ReSharper plugin is running in deprecated mode. inspectcode.exe should be ran outside the " +
+              "plugin and the report imported through " + reSharperConf.reportPathKey() + " property.");
+    }
+
     checkProperty(settings, ReSharperPlugin.PROJECT_NAME_PROPERTY_KEY);
     checkProperty(settings, ReSharperPlugin.SOLUTION_FILE_PROPERTY_KEY);
 
@@ -127,7 +150,9 @@ public class ReSharperSensor implements Sensor {
   }
 
   private void parseReport(FileProvider fileProvider, ReSharperReportParser parser, File reportFile) {
-    LOG.info("Parsing ReSharper report: " + reportFile);
+    if(canLog("info")) {
+      LOG.info("Parsing ReSharper report: " + reportFile);
+    }
     File solutionFile = new File(settings.getString(ReSharperPlugin.SOLUTION_FILE_PROPERTY_KEY));
     List<ReSharperIssue> parse = parser.parse(reportFile);
     for (ReSharperIssue issue : parse) {
@@ -165,12 +190,14 @@ public class ReSharperSensor implements Sensor {
     return issue.filePath() != null && issue.line() != null;
   }
 
-  private static void logSkippedIssueOutsideOfSonarQube(ReSharperIssue issue, File file) {
+  private void logSkippedIssueOutsideOfSonarQube(ReSharperIssue issue, File file) {
     logSkippedIssue(issue, "whose file \"" + file.getAbsolutePath() + "\" is not in SonarQube.");
   }
 
-  private static void logSkippedIssue(ReSharperIssue issue, String reason) {
-    LOG.info("Skipping the ReSharper issue at line " + issue.reportLine() + " " + reason);
+  private void logSkippedIssue(ReSharperIssue issue, String reason) {
+    if(canLog("info")) {
+      LOG.info("Skipping the ReSharper issue at line " + issue.reportLine() + " " + reason);
+    }
   }
 
   private List<String> enabledRuleKeys() {

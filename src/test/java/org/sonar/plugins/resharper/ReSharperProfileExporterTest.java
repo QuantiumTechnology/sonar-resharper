@@ -44,7 +44,7 @@ public class ReSharperProfileExporterTest {
     RulesProfile profile = RulesProfile.create("name", "key");
     profile.activateRule(Rule.create("key", "ruleKey", "ruleName"), null);
 
-    ReSharperProfileExporter exporter = new ReSharperProfileExporter(new ReSharperConfiguration("key", "key", "key"));
+    ReSharperProfileExporter exporter = new ReSharperProfileExporter(new ReSharperConfiguration("key", "key", "key","key"));
 
     thrown.expectMessage("Failed to export profile [name=name,language=key]");
     thrown.expect(IllegalStateException.class);

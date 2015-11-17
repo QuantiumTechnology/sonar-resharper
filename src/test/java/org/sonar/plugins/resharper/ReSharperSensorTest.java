@@ -64,7 +64,7 @@ public class ReSharperSensorTest {
     Project project = mock(Project.class);
 
     ReSharperSensor sensor = new ReSharperSensor(
-      new ReSharperConfiguration("lang", "foo-resharper", "fooReportkey"),
+      new ReSharperConfiguration("lang", "foo-resharper", "fooReportkey","info"),
       settings, profile, fileSystem, perspectives);
 
     assertThat(sensor.shouldExecuteOnProject(project)).isFalse();
@@ -94,7 +94,7 @@ public class ReSharperSensorTest {
     ResourcePerspectives perspectives = mock(ResourcePerspectives.class);
 
     ReSharperSensor sensor = new ReSharperSensor(
-      new ReSharperConfiguration(languageKey, "foo-resharper", "fooReport"),
+      new ReSharperConfiguration(languageKey, "foo-resharper", "fooReport", "key"),
       settings, profile, fileSystem, perspectives);
 
     List<ActiveRule> activeRules = mockActiveRules("RedundantUsingDirective");
@@ -145,7 +145,7 @@ public class ReSharperSensorTest {
 
     String languageKey = "foo";
     ReSharperSensor sensor = new ReSharperSensor(
-      new ReSharperConfiguration(languageKey, "foo-resharper", "fooReportkey"),
+      new ReSharperConfiguration(languageKey, "foo-resharper", "fooReportkey", "key"),
       settings, profile, fileSystem, perspectives);
 
     List<ActiveRule> activeRules = mockActiveRules("AccessToDisposedClosure", "AccessToForEachVariableInClosure");
@@ -259,7 +259,7 @@ public class ReSharperSensorTest {
   }
 
   private static ReSharperSensor createReSharperSensor(Settings settings) {
-    ReSharperConfiguration reSharperConf = new ReSharperConfiguration("", "", ReSharperPlugin.CS_REPORT_PATH_KEY);
+    ReSharperConfiguration reSharperConf = new ReSharperConfiguration("", "", ReSharperPlugin.CS_REPORT_PATH_KEY, "info");
     return new ReSharperSensor(reSharperConf, settings, mock(RulesProfile.class), mock(FileSystem.class), mock(ResourcePerspectives.class));
   }
 

@@ -24,11 +24,13 @@ public class ReSharperConfiguration {
   private final String languageKey;
   private final String repositoryKey;
   private final String reportPathKey;
+  private final String logVerbosityKey;
 
-  public ReSharperConfiguration(String languageKey, String repositoryKey, String reportPathKey) {
+  public ReSharperConfiguration(String languageKey, String repositoryKey, String reportPathKey, String logVerbosityKey) {
     this.languageKey = languageKey;
     this.repositoryKey = repositoryKey;
     this.reportPathKey = reportPathKey;
+    this.logVerbosityKey=logVerbosityKey;
   }
 
   public String languageKey() {
@@ -37,6 +39,10 @@ public class ReSharperConfiguration {
 
   public String repositoryKey() {
     return repositoryKey;
+  }
+
+  public String logVerbosityKey() {
+    return logVerbosityKey;
   }
 
   public String reportPathKey() {

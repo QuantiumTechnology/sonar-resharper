@@ -37,7 +37,7 @@ public class ReSharperProfileImporterTest {
   public void test_invalid_xml() throws Exception {
     String content = "<wpf:ResourceDictionary xml:space=\"preserve\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" xmlns:s=\"clr-namespace:System;assembly=mscorlib\" xmlns:ss=\"urn:shemas-jetbrains-com:settings-storage-xaml\" xmlns:wpf=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">\n" +
       "  <s:String x:Key=\"/Defa";
-    ReSharperProfileImporter importer = new ReSharperProfileImporter(new ReSharperConfiguration("key", "key", "key"));
+    ReSharperProfileImporter importer = new ReSharperProfileImporter(new ReSharperConfiguration("key", "key", "key", "key"));
     ValidationMessages messages = ValidationMessages.create();
     RulesProfile profile = importer.importProfile(new StringReader(content), messages);
     List<ActiveRule> rules = profile.getActiveRules();
@@ -52,7 +52,7 @@ public class ReSharperProfileImporterTest {
     String content = "<bad xml:space=\"preserve\" xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\" xmlns:s=\"clr-namespace:System;assembly=mscorlib\" xmlns:ss=\"urn:shemas-jetbrains-com:settings-storage-xaml\" xmlns:wpf=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\">\n" +
       "  <s:String x:Key=\"/Default/CodeInspection/Highlighting/InspectionSeverities/=key1/@EntryIndexedValue\">WARNING</s:String>\n" +
       "</bad>";
-    ReSharperProfileImporter importer = new ReSharperProfileImporter(new ReSharperConfiguration("key", "key", "key"));
+    ReSharperProfileImporter importer = new ReSharperProfileImporter(new ReSharperConfiguration("key", "key", "key", "key"));
     ValidationMessages messages = ValidationMessages.create();
     RulesProfile profile = importer.importProfile(new StringReader(content), messages);
     List<ActiveRule> rules = profile.getActiveRules();
@@ -73,7 +73,7 @@ public class ReSharperProfileImporterTest {
       "<s:String>value</s:String>" +
       "<s:other>value</s:other>" +
       "</wpf:ResourceDictionary>";
-    ReSharperProfileImporter importer = new ReSharperProfileImporter(new ReSharperConfiguration("key", "key", "key"));
+    ReSharperProfileImporter importer = new ReSharperProfileImporter(new ReSharperConfiguration("key", "key", "key", "key"));
     ValidationMessages messages = ValidationMessages.create();
     RulesProfile profile = importer.importProfile(new StringReader(content), messages);
     List<ActiveRule> rules = profile.getActiveRules();

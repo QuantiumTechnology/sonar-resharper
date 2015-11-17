@@ -35,6 +35,7 @@ public class ReSharperPlugin extends SonarPlugin {
   public static final String TIMEOUT_MINUTES_PROPERTY_KEY = "sonar.resharper.timeoutMinutes";
 
   public static final String CS_REPORT_PATH_KEY = "sonar.resharper.cs.reportPath";
+  public static final String LOG_VERBOSITY = "sonar.resharper.cs.logVerbosity";
   public static final String VBNET_REPORT_PATH_KEY = "sonar.resharper.vbnet.reportPath";
 
   public static final String OLD_INSTALL_DIRECTORY_KEY = "sonar.resharper.installDirectory";
@@ -42,8 +43,8 @@ public class ReSharperPlugin extends SonarPlugin {
   private static final String CATEGORY = "ReSharper";
   private static final String DEPRECATED_SUBCATEGORY = "Deprecated";
   private static final String DEPRECATED_DESCRIPTION = "This property is deprecated and will be removed in a future version.<br />"
-    + "You should stop using it as soon as possible.<br />"
-    + "Consult the migration guide for guidance.";
+          + "You should stop using it as soon as possible.<br />"
+          + "Consult the migration guide for guidance.";
 
   /**
    * {@inheritDoc}
@@ -62,56 +63,63 @@ public class ReSharperPlugin extends SonarPlugin {
 
   private static ImmutableList<PropertyDefinition> pluginProperties() {
     return ImmutableList.of(
-      PropertyDefinition.builder(CS_REPORT_PATH_KEY)
-        .name("ReSharper report path for C#")
-        .description("Path to the ReSharper report for C#, i.e. reports/cs-report.xml")
-        .category(CATEGORY)
-        .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
-        .build(),
+            PropertyDefinition.builder(CS_REPORT_PATH_KEY)
+                    .name("ReSharper report path for C#")
+                    .description("Path to the ReSharper report for C#, i.e. reports/cs-report.xml")
+                    .category(CATEGORY)
+                    .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
+                    .build(),
 
-      PropertyDefinition.builder(VBNET_REPORT_PATH_KEY)
-        .name("ReSharper report path for VB.NET")
-        .description("Path to the ReSharper report for VB.NET, i.e. reports/vbnet-report.xml")
-        .category(CATEGORY)
-        .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
-        .build(),
+            PropertyDefinition.builder(LOG_VERBOSITY)
+                    .name("LogVerbosity for runner output")
+                    .description("LogVerbosity for runner output, can be used to reduce logging")
+                    .category(CATEGORY)
+                    .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
+                    .build(),
 
-      PropertyDefinition.builder(SOLUTION_FILE_PROPERTY_KEY)
-        .name("Solution file")
-        .description("The absolute path to the solution or project file given as input to inspectcode.exe. Example: C:/Projects/MyProject/MySolution.sln.")
-        .category(CATEGORY)
-        .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
-        .build(),
+            PropertyDefinition.builder(VBNET_REPORT_PATH_KEY)
+                    .name("ReSharper report path for VB.NET")
+                    .description("Path to the ReSharper report for VB.NET, i.e. reports/vbnet-report.xml")
+                    .category(CATEGORY)
+                    .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
+                    .build(),
 
-      PropertyDefinition.builder(PROJECT_NAME_PROPERTY_KEY)
-        .name(deprecatedName("Visual Studio project name"))
-        .description(deprecatedDescription("Example: MyLibrary."))
-        .category(CATEGORY)
-        .subCategory(DEPRECATED_SUBCATEGORY)
-        .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
-        .build(),
+            PropertyDefinition.builder(SOLUTION_FILE_PROPERTY_KEY)
+                    .name("Solution file")
+                    .description("The absolute path to the solution or project file given as input to inspectcode.exe. Example: C:/Projects/MyProject/MySolution.sln.")
+                    .category(CATEGORY)
+                    .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
+                    .build(),
 
-      PropertyDefinition.builder(INSPECTCODE_PATH_PROPERTY_KEY)
-        .name(deprecatedName("Path to inspectcode.exe"))
-        .description(deprecatedDescription("Example: C:/jetbrains-commandline-tools/inspectcode.exe."))
-        .defaultValue("C:/jetbrains-commandline-tools/inspectcode.exe")
-        .category(CATEGORY)
-        .subCategory(DEPRECATED_SUBCATEGORY)
-        .onQualifiers(Qualifiers.PROJECT)
-        .deprecatedKey(OLD_INSTALL_DIRECTORY_KEY)
-        .build(),
+            PropertyDefinition.builder(PROJECT_NAME_PROPERTY_KEY)
+                    .name(deprecatedName("Visual Studio project name"))
+                    .description(deprecatedDescription("Example: MyLibrary."))
+                    .category(CATEGORY)
+                    .subCategory(DEPRECATED_SUBCATEGORY)
+                    .onlyOnQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
+                    .build(),
 
-      PropertyDefinition.builder(TIMEOUT_MINUTES_PROPERTY_KEY)
-        .name(deprecatedName("ReSharper execution timeout"))
-        .description(deprecatedDescription("Time in minutes after which ReSharper's execution should be interrupted if not finished."))
-        .defaultValue("60")
-        .category(CATEGORY)
-        .subCategory(DEPRECATED_SUBCATEGORY)
-        .onQualifiers(Qualifiers.PROJECT)
-        .type(PropertyType.INTEGER)
-        .build(),
+            PropertyDefinition.builder(INSPECTCODE_PATH_PROPERTY_KEY)
+                    .name(deprecatedName("Path to inspectcode.exe"))
+                    .description(deprecatedDescription("Example: C:/jetbrains-commandline-tools/inspectcode.exe."))
+                    .defaultValue("C:/jetbrains-commandline-tools/inspectcode.exe")
+                    .category(CATEGORY)
+                    .subCategory(DEPRECATED_SUBCATEGORY)
+                    .onQualifiers(Qualifiers.PROJECT)
+                    .deprecatedKey(OLD_INSTALL_DIRECTORY_KEY)
+                    .build(),
 
-      deprecatedPropertyDefinition(OLD_INSTALL_DIRECTORY_KEY));
+            PropertyDefinition.builder(TIMEOUT_MINUTES_PROPERTY_KEY)
+                    .name(deprecatedName("ReSharper execution timeout"))
+                    .description(deprecatedDescription("Time in minutes after which ReSharper's execution should be interrupted if not finished."))
+                    .defaultValue("60")
+                    .category(CATEGORY)
+                    .subCategory(DEPRECATED_SUBCATEGORY)
+                    .onQualifiers(Qualifiers.PROJECT)
+                    .type(PropertyType.INTEGER)
+                    .build(),
+
+            deprecatedPropertyDefinition(OLD_INSTALL_DIRECTORY_KEY));
   }
 
   private static String deprecatedDescription(String description) {
@@ -124,13 +132,13 @@ public class ReSharperPlugin extends SonarPlugin {
 
   private static PropertyDefinition deprecatedPropertyDefinition(String oldKey) {
     return PropertyDefinition
-      .builder(oldKey)
-      .name(deprecatedName(oldKey))
-      .description(DEPRECATED_DESCRIPTION)
-      .category(CATEGORY)
-      .subCategory(DEPRECATED_SUBCATEGORY)
-      .onQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
-      .build();
+            .builder(oldKey)
+            .name(deprecatedName(oldKey))
+            .description(DEPRECATED_DESCRIPTION)
+            .category(CATEGORY)
+            .subCategory(DEPRECATED_SUBCATEGORY)
+            .onQualifiers(Qualifiers.PROJECT, Qualifiers.MODULE)
+            .build();
   }
 
 }

@@ -29,7 +29,7 @@ import java.util.List;
 
 public class CSharpReSharperProvider {
 
-  public static final ReSharperConfiguration RESHARPER_CONF = new ReSharperConfiguration("cs", "resharper-cs", ReSharperPlugin.CS_REPORT_PATH_KEY);
+  public static final ReSharperConfiguration RESHARPER_CONF = new ReSharperConfiguration("cs", "resharper-cs", ReSharperPlugin.CS_REPORT_PATH_KEY, ReSharperPlugin.LOG_VERBOSITY);
 
   private CSharpReSharperProvider() {
   }
